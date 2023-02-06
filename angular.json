@@ -97,6 +97,16 @@
             ],
             "scripts": []
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {
+            "prerender": false,
+            "ssr": false,
+            "browserTarget": "Athena:build:production",
+            "firebaseProject": "athena-dms",
+            "firebaseHostingSite": "athena-dms"
+          }
         }
       }
     }
