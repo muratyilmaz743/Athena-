@@ -9,6 +9,7 @@ import { provideAuth,getAuth } from '@angular/fire/auth';
 import { provideDatabase,getDatabase } from '@angular/fire/database';
 import { providePerformance,getPerformance } from '@angular/fire/performance';
 import { provideStorage,getStorage } from '@angular/fire/storage';
+import {AngularFireModule} from "@angular/fire/compat";
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { provideStorage,getStorage } from '@angular/fire/storage';
   imports: [
     BrowserModule,
     AppRoutingModule,
+    AngularFireModule.initializeApp(environment.firebaseConfig),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
     provideDatabase(() => getDatabase()),
