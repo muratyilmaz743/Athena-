@@ -22,6 +22,7 @@ export default function Page() {
                       const errorCode = error.code;
                       const errorMessage = error.message;
                       console.log(errorCode, errorMessage);
+                      window.
                       // ..
                   });
            
