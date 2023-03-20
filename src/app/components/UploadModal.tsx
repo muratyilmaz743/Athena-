@@ -21,17 +21,16 @@ const style = {
 };
 
 export default function UploadModal() {
-  const [open, setOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   const [percent, setPercent] = useState(0);
   const [file, setFile] = useState<Blob>();
   const handleOpen = () => {
     setPercent(0)  
-    setOpen(true)
+    setModalOpen(true)
   };
-  const handleClose = () => setOpen(false);
+  const handleClose = () => setModalOpen(false);
 
   const onChange = (event: { target: { files: any[] } }) => {
-    console.log(event.target.files[0]);
     setFile(event.target.files[0]);
   };
 
@@ -50,6 +49,9 @@ export default function UploadModal() {
         setPercent(percent);
       },
       (err) => console.log(err),
+      () => {
+        setModalOpen(false)
+      }
     );
   };
 
@@ -57,7 +59,7 @@ export default function UploadModal() {
     <div>
       <Button onClick={handleOpen}>Belge Yükle</Button>
       <Modal
-        open={open}
+        open={modalOpen}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"

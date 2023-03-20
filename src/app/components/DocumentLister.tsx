@@ -1,4 +1,25 @@
+"use client";
+
+import ListedDocumentItem from "./ListedDocumenItem";
+import { ref, listAll } from "firebase/storage";
+import { storage } from "../../firebase";
+import { useState } from "react";
+
 export default function DocumentLister() {
+  const [files, setFiles] = useState<Blob>();
+
+  const listRef = ref(storage, 'files/');
+
+  listAll(listRef)
+  .then((res) => {
+    res.items.forEach((itemRef) => {
+      console.log(itemRef.name);
+      setFiles([...files, {name: itemRef.name, category: itemRef.name, size: 0}])
+    });
+  }).catch((error) => {
+    console.log("Uh-oh, an error occurred!", error);
+  });
+
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
       <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -28,28 +49,7 @@ export default function DocumentLister() {
           </tr>
         </thead>
         <tbody>
-          <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-            <td className="w-4 p-4">
-              <div className="flex items-center">
-                <input
-                  id="checkbox-table-search-1"
-                  type="checkbox"
-                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                />
-                <label htmlFor="checkbox-table-search-1" className="sr-only">
-                  checkbox
-                </label>
-              </div>
-            </td>
-            <th
-              scope="row"
-              className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-            >
-              Apple MacBook Pro
-            </th>
-            <td className="px-6 py-4">Silver</td>
-            <td className="px-6 py-4">Laptop</td>
-          </tr>
+          <ListedDocumentItem name={"Apple MacBook Pro"} category={"Laptop"} size={2000}/>
         </tbody>
       </table>
       <div className="grid width-100 justify-center items-center align-middle">
