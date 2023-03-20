@@ -15,7 +15,7 @@ export default function Page() {
     await createUserWithEmailAndPassword(auth, email, password)
       .then(async (userCredential) => {
         // Signed in
-        document.getElementById('successMessage')?.classList.remove('hidden')
+        document.getElementById("successMessage")?.classList.remove("hidden");
         const user = userCredential.user;
         console.log(user);
         await awaitTimeout(1000);
@@ -23,9 +23,10 @@ export default function Page() {
 
         // ...
       })
-      .catch((error) => {
+      .catch((error) => {     
         const errorCode = error.code;
-        const errorMessage = error.message;
+        const errorMessage = error.message;   
+        document.getElementById("warningMessage")?.classList.remove("hidden");
         console.log(errorCode, errorMessage);
         // ..
       });
@@ -48,7 +49,16 @@ export default function Page() {
                 className="hidden p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
                 role="alert"
               >
-                <span className="font-medium">Success!</span> Navigating to main page
+                <span className="font-medium">Success!</span> Navigating to main
+                page
+              </div>
+              <div
+                id="warningMessage"
+                className="hidden p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300"
+                role="alert"
+              >
+                <span className="font-medium">Warning!</span> Change a few
+                things up and try submitting again.
               </div>
               <form className="space-y-4 md:space-y-6" action="#">
                 <div>
