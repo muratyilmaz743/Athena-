@@ -22,7 +22,7 @@ export default function DocumentLister() {
             ...currentFiles,
             {
               name: res.name,
-              category: categoryFormat(res.fullPath),
+              category: !!res.customMetadata ? res.customMetadata?.category : "Yok",
               size: formatBytes(res.size),
               type: res.contentType
             },
@@ -108,6 +108,9 @@ export default function DocumentLister() {
             <th scope="col" className="px-6 py-3">
               Boyut
             </th>
+            <th scope="col" className="px-6 py-3">
+              Dosya Tipi
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -116,6 +119,7 @@ export default function DocumentLister() {
               name={file.name}
               category={file.category}
               size={file.size}
+              type={file.type}
             />
           ))}
         </tbody>

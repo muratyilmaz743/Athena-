@@ -5,7 +5,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 import { useState } from "react";
-import { ref, uploadBytesResumable } from "firebase/storage";
+import { ref, uploadBytesResumable, updateMetadata, SettableMetadata, StorageReference  } from "firebase/storage";
 import { storage } from "../../firebase";
 
 const style = {
@@ -23,16 +23,26 @@ const style = {
 export default function UploadModal() {
   const [modalOpen, setModalOpen] = useState(false);
   const [percent, setPercent] = useState(0);
+  const [category, setCategory] = useState("");
   const [file, setFile] = useState<Blob>();
   const handleOpen = () => {
-    setPercent(0)  
-    setModalOpen(true)
+    setPercent(0);
+    setModalOpen(true);
   };
   const handleClose = () => setModalOpen(false);
 
-  const onChange = (event: { target: { files: any[] } }) => {
+  const onFileChange = (event: { target: { files: any[] } }) => {
     setFile(event.target.files[0]);
   };
+
+  const updateCategory = (documentRef: StorageReference, category: string) => {
+    const newMetadata = {
+      customMetadata: {
+        'category': category,
+      }
+    }
+    updateMetadata(documentRef, newMetadata)
+  }
 
   const onUpload = () => {
     if (!file) return;
@@ -50,9 +60,12 @@ export default function UploadModal() {
       },
       (err) => console.log(err),
       () => {
-        setModalOpen(false)
+        updateCategory(storageRef, category)
+        setModalOpen(false);
       }
     );
+
+
   };
 
   return (
@@ -71,7 +84,12 @@ export default function UploadModal() {
               id="file_input"
               type="file"
               accept=".pdf"
-              onChange={onChange}
+              onChange={onFileChange}
+            />
+
+            <input
+              className="p-2 block w-full text-sm text-gray-900 border border-gray-300 rounded-md cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+              onChange={(e) => setCategory(e.target.value)}
             />
 
             <button

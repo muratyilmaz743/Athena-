@@ -1,6 +1,6 @@
 export interface DocumentProps {
               name: string;
-              category: string;
+              category?: string;
               type?: string;
               size: string;
 }

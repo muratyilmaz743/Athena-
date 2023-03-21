@@ -23,6 +23,7 @@ export default function ListedDocumentItem(props: DocumentProps) {
       </th>
       <td className="px-6 py-4">{props.category}</td>
       <td className="px-6 py-4">{props.size}</td>
+      <td className="px-6 py-4">{props.type}</td>
     </tr>
   );
 }
