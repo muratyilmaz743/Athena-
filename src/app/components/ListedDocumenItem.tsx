@@ -1,4 +1,4 @@
-import { DocumentProps } from "../utils/DocumentProps";
+import { DocumentProps } from "../utils/models/DocumentProps";
 
 export default function ListedDocumentItem(props: DocumentProps) {
   return (

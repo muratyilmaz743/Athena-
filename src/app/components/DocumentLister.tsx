@@ -1,25 +1,87 @@
 "use client";
 
-import ListedDocumentItem from "./ListedDocumenItem";
-import { ref, listAll } from "firebase/storage";
+import { ref, listAll, getMetadata } from "firebase/storage";
 import { storage } from "../../firebase";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import ListedDocumentItem from "./ListedDocumenItem";
+import { DocumentProps } from "../utils/models/DocumentProps";
+import { formatBytes } from "../utils/sizeFormat";
+import { categoryFormat } from "../utils/categoryFormat";
 
 export default function DocumentLister() {
-  const [files, setFiles] = useState<Blob>();
+  const [files, setFiles] = useState<DocumentProps[]>([]);
 
-  const listRef = ref(storage, 'files/');
+  const listRef = ref(storage, "files/");
 
-  listAll(listRef)
-  .then((res) => {
-    res.items.forEach((itemRef) => {
-      console.log(itemRef.name);
-      setFiles([...files, {name: itemRef.name, category: itemRef.name, size: 0}])
+  useEffect(() => {
+    listAll(listRef).then((res) => {
+      res.items.forEach((document) => {
+        const documentReference = ref(storage, document.fullPath);
+        getMetadata(documentReference).then((res) =>
+          setFiles((currentFiles) => [
+            ...currentFiles,
+            {
+              name: res.name,
+              category: categoryFormat(res.fullPath),
+              size: formatBytes(res.size),
+              type: res.contentType
+            },
+          ])
+        );
+      });
     });
-  }).catch((error) => {
-    console.log("Uh-oh, an error occurred!", error);
-  });
+  }, []);
 
+  /**
+   * bucket
+    : 
+    "athena-dms.appspot.com"
+    cacheControl
+    : 
+    undefined
+    contentDisposition
+    : 
+    "inline; filename*=utf-8''Murat+Y%C4%B1lmaz+RESUME-1.pdf"
+    contentEncoding
+    : 
+    "identity"
+    contentLanguage
+    : 
+    undefined
+    contentType
+    : 
+    "application/pdf"
+    customMetadata
+    : 
+    undefined
+    fullPath
+    : 
+    "files/Murat+Yılmaz+RESUME-1.pdf"
+    generation
+    : 
+    "1679392154958597"
+    md5Hash
+    : 
+    "NujMqYjC0wc83xNhlA/1CQ=="
+    metageneration
+    : 
+    "1"
+    name
+    : 
+    "Murat+Yılmaz+RESUME-1.pdf"
+    size
+    : 
+    445953
+    timeCreated
+    : 
+    "2023-03-21T09:49:15.073Z"
+    type
+    : 
+    "file"
+    updated
+    : 
+    "2023-03-21T09:49:15.073Z"
+   */
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
       <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -49,7 +111,13 @@ export default function DocumentLister() {
           </tr>
         </thead>
         <tbody>
-          <ListedDocumentItem name={"Apple MacBook Pro"} category={"Laptop"} size={2000}/>
+          {files.map((file) => (
+            <ListedDocumentItem
+              name={file.name}
+              category={file.category}
+              size={file.size}
+            />
+          ))}
         </tbody>
       </table>
       <div className="grid width-100 justify-center items-center align-middle">
