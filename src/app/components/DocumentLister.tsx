@@ -1,37 +1,56 @@
 "use client";
 
-import { ref, listAll, getMetadata, getDownloadURL } from "firebase/storage";
+import {
+  ref,
+  getMetadata,
+  getDownloadURL,
+  list,
+} from "firebase/storage";
 import { storage } from "../../firebase";
 import { useEffect, useState } from "react";
 import ListedDocumentItem from "./ListedDocumenItem";
 import { DocumentProps } from "../utils/models/DocumentProps";
 import { formatBytes } from "../utils/sizeFormat";
+import { PageToken } from "../utils/models/PageToken";
 
 export default function DocumentLister() {
   const [files, setFiles] = useState<DocumentProps[]>([]);
+  const [pageToken, setPageToken] = useState<PageToken>({ maxResults: 1 });
 
   const listRef = ref(storage, "files/");
 
-  useEffect(() => {
-    listAll(listRef).then((res) => {
+  const getNextPage = async () => {
+    getListedDocument();
+  };
+
+  async function getListedDocument() {
+    await list(listRef, pageToken).then((res) => {      
       res.items.forEach((document) => {
+        console.log(pageToken);
         const documentReference = ref(storage, document.fullPath);
         getMetadata(documentReference).then((res) => {
-          getDownloadURL(documentReference).then(url => {
+          getDownloadURL(documentReference).then((url) => {
             setFiles((currentFiles) => [
               ...currentFiles,
               {
                 name: res.name,
-                category: !!res.customMetadata ? res.customMetadata?.category : "Yok",
+                category: !!res.customMetadata
+                  ? res.customMetadata?.category
+                  : "Yok",
                 size: formatBytes(res.size),
                 type: res.contentType,
-                url: url
+                url: url,
               },
-            ])
-          })}
-        );
+            ]);
+          });
+        });
       });
+      setPageToken({maxResults: 1, pageToken: res.nextPageToken})
     });
+  }
+
+  useEffect(() => {
+    getListedDocument();
   }, []);
 
   /**
@@ -85,11 +104,11 @@ export default function DocumentLister() {
     "2023-03-21T09:49:15.073Z"
    */
   return (
-    <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <div className="relative shadow-md sm:rounded-lg">
       <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
-            <th scope="col" className="p-4">
+            {/* <th scope="col" className="p-4">
               <div className="flex items-center">
                 <input
                   id="checkbox-all-search"
@@ -100,7 +119,7 @@ export default function DocumentLister() {
                   checkbox
                 </label>
               </div>
-            </th>
+            </th> */}
             <th scope="col" className="px-6 py-3">
               Belge Adı
             </th>
@@ -135,91 +154,20 @@ export default function DocumentLister() {
           {" "}
           <ul className="inline-flex items-center -space-x-px">
             <li>
-              <a
+              <button
+
+                onClick={getNextPage}
                 href="#"
-                className="block px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                className="bg-blue-500 hover:bg-blue-700 mb-4 text-white font-bold py-2 px-4 rounded disabled:bg-gray-600 disabled:text-gray-500"
               >
-                <span className="sr-only">Previous</span>
-                <svg
-                  className="w-5 h-5"
-                  aria-hidden="true"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                  ></path>
-                </svg>
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-              >
-                1
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-              >
-                2
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                aria-current="page"
-                className="z-10 px-3 py-2 leading-tight text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white"
-              >
-                3
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-              >
-                ...
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-              >
-                100
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-              >
-                <span className="sr-only">Next</span>
-                <svg
-                  className="w-5 h-5"
-                  aria-hidden="true"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                  ></path>
-                </svg>
-              </a>
+                Next Page
+              </button>
             </li>
           </ul>
         </nav>
-        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 rounded my-4 mx-12">
+        {/* <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 rounded my-4 mx-12">
           Seçilenleri İndir
-        </button>
+        </button> */}
       </div>
     </div>
   );
