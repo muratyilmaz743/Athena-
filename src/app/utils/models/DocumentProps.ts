@@ -3,4 +3,5 @@ export interface DocumentProps {
               category?: string;
               type?: string;
               size: string;
+              url: string;
 }

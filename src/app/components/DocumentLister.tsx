@@ -1,12 +1,11 @@
 "use client";
 
-import { ref, listAll, getMetadata } from "firebase/storage";
+import { ref, listAll, getMetadata, getDownloadURL } from "firebase/storage";
 import { storage } from "../../firebase";
 import { useEffect, useState } from "react";
 import ListedDocumentItem from "./ListedDocumenItem";
 import { DocumentProps } from "../utils/models/DocumentProps";
 import { formatBytes } from "../utils/sizeFormat";
-import { categoryFormat } from "../utils/categoryFormat";
 
 export default function DocumentLister() {
   const [files, setFiles] = useState<DocumentProps[]>([]);
@@ -17,16 +16,19 @@ export default function DocumentLister() {
     listAll(listRef).then((res) => {
       res.items.forEach((document) => {
         const documentReference = ref(storage, document.fullPath);
-        getMetadata(documentReference).then((res) =>
-          setFiles((currentFiles) => [
-            ...currentFiles,
-            {
-              name: res.name,
-              category: !!res.customMetadata ? res.customMetadata?.category : "Yok",
-              size: formatBytes(res.size),
-              type: res.contentType
-            },
-          ])
+        getMetadata(documentReference).then((res) => {
+          getDownloadURL(documentReference).then(url => {
+            setFiles((currentFiles) => [
+              ...currentFiles,
+              {
+                name: res.name,
+                category: !!res.customMetadata ? res.customMetadata?.category : "Yok",
+                size: formatBytes(res.size),
+                type: res.contentType,
+                url: url
+              },
+            ])
+          })}
         );
       });
     });
@@ -120,6 +122,7 @@ export default function DocumentLister() {
               category={file.category}
               size={file.size}
               type={file.type}
+              url={file.url}
             />
           ))}
         </tbody>

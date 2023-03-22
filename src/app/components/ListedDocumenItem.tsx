@@ -19,7 +19,7 @@ export default function ListedDocumentItem(props: DocumentProps) {
         scope="row"
         className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
       >
-        {props.name}
+        <a href={props.url} target="_blank">{props.name}</a>
       </th>
       <td className="px-6 py-4">{props.category}</td>
       <td className="px-6 py-4">{props.size}</td>
