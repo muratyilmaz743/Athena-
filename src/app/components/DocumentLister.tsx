@@ -1,21 +1,17 @@
 "use client";
 
-import {
-  ref,
-  getMetadata,
-  getDownloadURL,
-  list,
-} from "firebase/storage";
+import { ref, getMetadata, getDownloadURL, list } from "firebase/storage";
 import { storage } from "../../firebase";
 import { useEffect, useState } from "react";
 import ListedDocumentItem from "./ListedDocumenItem";
 import { DocumentProps } from "../utils/models/DocumentProps";
 import { formatBytes } from "../utils/sizeFormat";
 import { PageToken } from "../utils/models/PageToken";
+import { documentLister } from "../constants/variables";
 
 export default function DocumentLister() {
   const [files, setFiles] = useState<DocumentProps[]>([]);
-  const [pageToken, setPageToken] = useState<PageToken>({ maxResults: 1 });
+  const [pageToken, setPageToken] = useState<PageToken>({ maxResults: documentLister.listingResult });
 
   const listRef = ref(storage, "files/");
 
@@ -24,7 +20,7 @@ export default function DocumentLister() {
   };
 
   async function getListedDocument() {
-    await list(listRef, pageToken).then((res) => {      
+    await list(listRef, pageToken).then((res) => {
       res.items.forEach((document) => {
         console.log(pageToken);
         const documentReference = ref(storage, document.fullPath);
@@ -45,7 +41,7 @@ export default function DocumentLister() {
           });
         });
       });
-      setPageToken({maxResults: 1, pageToken: res.nextPageToken})
+      setPageToken({ maxResults: documentLister.listingResult, pageToken: res.nextPageToken });
     });
   }
 
@@ -155,7 +151,6 @@ export default function DocumentLister() {
           <ul className="inline-flex items-center -space-x-px">
             <li>
               <button
-
                 onClick={getNextPage}
                 href="#"
                 className="bg-blue-500 hover:bg-blue-700 mb-4 text-white font-bold py-2 px-4 rounded disabled:bg-gray-600 disabled:text-gray-500"
