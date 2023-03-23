@@ -1,6 +1,12 @@
 "use client";
 
-import { ref, getMetadata, getDownloadURL, list } from "firebase/storage";
+import {
+  ref,
+  getMetadata,
+  getDownloadURL,
+  list,
+  StorageReference,
+} from "firebase/storage";
 import { storage } from "../../firebase";
 import { useEffect, useState } from "react";
 import ListedDocumentItem from "./ListedDocumenItem";
@@ -11,7 +17,9 @@ import { documentLister } from "../constants/variables";
 
 export default function DocumentLister() {
   const [files, setFiles] = useState<DocumentProps[]>([]);
-  const [pageToken, setPageToken] = useState<PageToken>({ maxResults: documentLister.listingResult });
+  const [pageToken, setPageToken] = useState<PageToken>({
+    maxResults: documentLister.listingResult,
+  });
 
   const listRef = ref(storage, "files/");
 
@@ -19,31 +27,40 @@ export default function DocumentLister() {
     getListedDocument();
   };
 
-  async function getListedDocument() {
-    await list(listRef, pageToken).then((res) => {
-      res.items.forEach((document) => {
-        console.log(pageToken);
-        const documentReference = ref(storage, document.fullPath);
-        getMetadata(documentReference).then((res) => {
-          getDownloadURL(documentReference).then((url) => {
-            setFiles((currentFiles) => [
-              ...currentFiles,
-              {
-                name: res.name,
-                category: !!res.customMetadata
-                  ? res.customMetadata?.category
-                  : "Yok",
-                size: formatBytes(res.size),
-                type: res.contentType,
-                url: url,
-              },
-            ]);
-          });
+  const addDocuments = (documents: StorageReference[]) => {
+    documents.forEach((document) => {
+      const documentReference = ref(storage, document.fullPath);
+      getMetadata(documentReference).then((res) => {
+        getDownloadURL(documentReference).then((url) => {
+          setFiles((currentFiles) => [
+            ...currentFiles,
+            {
+              name: res.name,
+              category: !!res.customMetadata
+                ? res.customMetadata?.category
+                : "Yok",
+              size: formatBytes(res.size),
+              type: res.contentType,
+              url: url,
+            },
+          ]);
         });
       });
-      setPageToken({ maxResults: documentLister.listingResult, pageToken: res.nextPageToken });
     });
-  }
+  };
+
+  const getListedDocument = async () => {
+    await list(listRef, pageToken).then((res) => {
+      !res.nextPageToken
+        ? document.getElementById("nextPageBtn")?.setAttribute("disabled", "")
+        : "";
+      addDocuments(res.items);
+      setPageToken({
+        maxResults: documentLister.listingResult,
+        pageToken: res.nextPageToken,
+      });
+    });
+  };
 
   useEffect(() => {
     getListedDocument();
@@ -151,6 +168,7 @@ export default function DocumentLister() {
           <ul className="inline-flex items-center -space-x-px">
             <li>
               <button
+                id="nextPageBtn"
                 onClick={getNextPage}
                 href="#"
                 className="bg-blue-500 hover:bg-blue-700 mb-4 text-white font-bold py-2 px-4 rounded disabled:bg-gray-600 disabled:text-gray-500"

@@ -1,6 +1,5 @@
-import Image from "next/image";
 import { Inter } from "next/font/google";
-import styles from "./page.module.css";
+import styles from "./styles/page.module.css";
 import DocumentLister from "./components/DocumentLister";
 import UploadModal from "./components/UploadModal";
 
