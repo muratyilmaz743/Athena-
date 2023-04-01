@@ -4,19 +4,21 @@ import DocumentLister from "./components/DocumentLister";
 import UploadModal from "./components/UploadModal";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
-import { UserContextProvider } from "./context/userContext/UserContextProvider";
+import { UserContextProvider } from "./context/Provider/UserContextProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   return (
     <UserContextProvider>
-      <Header />
-      <main className={styles.main}>
-        <DocumentLister />
-        <UploadModal />
-      </main>
-      <Footer />
+      <>
+        <Header />
+        <main className={styles.main}>
+          <DocumentLister />
+          <UploadModal />
+        </main>
+        <Footer />
+      </>
     </UserContextProvider>
   );
 }
