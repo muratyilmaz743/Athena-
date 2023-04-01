@@ -1,7 +1,7 @@
 "use client";
 
 import { getAuth, signOut } from "firebase/auth";
-import { UserContext } from "../context/userContext/UserContext";
+import { UserContext } from "../context/Context/UserContext";
 
 export default function Header() {
   const onLogout = () => {
@@ -15,6 +15,7 @@ export default function Header() {
       });
   };
   return (
-    <UserContext.Consumer>{(value) => <p>{value}</p>}</UserContext.Consumer>
+
+    <UserContext.Consumer>{(value) => <p>{value?.email}</p>}</UserContext.Consumer>
   );
 }
