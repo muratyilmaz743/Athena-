@@ -15,7 +15,6 @@ export default function Home() {
         <Header />
         <main className={styles.main}>
           <DocumentLister />
-          <UploadModal />
         </main>
         <Footer />
       </>

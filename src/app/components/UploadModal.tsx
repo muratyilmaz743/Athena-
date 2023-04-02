@@ -70,7 +70,7 @@ export default function UploadModal() {
 
   return (
     <div>
-      <Button onClick={handleOpen}>Belge Yükle</Button>
+      <Button onClick={handleOpen} sx={{ my: 2, color: "white", display: "block" }}>Belge Yükle</Button>
       <Modal
         open={modalOpen}
         onClose={handleClose}
