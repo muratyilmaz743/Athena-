@@ -1,4 +1,4 @@
-import "./styles/globals.css";
+import "../assets/styles/globals.css";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import { UserContextProvider } from "./context/Provider/UserContextProvider";

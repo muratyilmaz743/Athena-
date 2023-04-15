@@ -23,6 +23,6 @@
       "@component/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/utils/sizeFormat"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/utils/sizeFormat", "custom.d.ts"],
   "exclude": ["node_modules"]
 }

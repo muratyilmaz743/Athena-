@@ -1,6 +1,6 @@
 "use client"
 
-import styles from "./styles/page.module.css";
+import styles from "../assets/styles/page.module.css";
 import DocumentLister from "./components/DocumentLister";
 import { UserContext } from "./context/Context/UserContext";
 import { useContext } from "react";

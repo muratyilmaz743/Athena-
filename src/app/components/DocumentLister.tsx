@@ -148,6 +148,7 @@ export default function DocumentLister() {
               <th scope="col" className="px-6 py-3">
                 Dosya Tipi
               </th>
+              <th scope="col" className="px-6 py-3"></th>
             </tr>
           </thead>
           <tbody>

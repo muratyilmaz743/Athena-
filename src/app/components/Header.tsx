@@ -1,22 +1,18 @@
 "use client";
 
-import { getAuth, signOut } from "firebase/auth";
-import { UserContext } from "../context/Context/UserContext";
-import * as React from "react";
+import MenuIcon from "@mui/icons-material/Menu";
+import { Button } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
-import Tooltip from "@mui/material/Tooltip";
-import MenuItem from "@mui/material/MenuItem";
-import AdbIcon from "@mui/icons-material/Adb";
-import PersonIcon from "@mui/icons-material/Person";
-import UploadModal from "./UploadModal";
+import IconButton from "@mui/material/IconButton";
+import Menu from "@mui/material/Menu";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import { getAuth, signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
+import * as React from "react";
+import { UserContext } from "../context/Context/UserContext";
 
 function ResponsiveAppBar() {
   const router = useRouter();
@@ -53,7 +49,7 @@ function ResponsiveAppBar() {
       .catch((error) => {
         console.log(error);
       });
-      handleCloseUserMenu
+    handleCloseUserMenu;
   };
 
   return (
@@ -62,7 +58,6 @@ function ResponsiveAppBar() {
         <AppBar position="static">
           <Container maxWidth="xl">
             <Toolbar disableGutters>
-              <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
               <Typography
                 variant="h6"
                 noWrap
@@ -80,7 +75,6 @@ function ResponsiveAppBar() {
               >
                 ATHENA
               </Typography>
-
               <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
                 <IconButton
                   size="large"
@@ -109,10 +103,8 @@ function ResponsiveAppBar() {
                   sx={{
                     display: { xs: "block", md: "none" },
                   }}
-                >
-                </Menu>
+                ></Menu>
               </Box>
-              <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
               <Typography
                 variant="h5"
                 noWrap
@@ -131,35 +123,17 @@ function ResponsiveAppBar() {
               >
                 LOGO
               </Typography>
-
-              <Box sx={{ flexGrow: 0 }}>
+              <div className="absolute right-0">
                 {value?.email}
-                <Tooltip title="Open settings">
-                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <PersonIcon />
-                  </IconButton>
-                </Tooltip>
-                <Menu
-                  sx={{ mt: "45px" }}
-                  id="menu-appbar"
-                  anchorEl={anchorElUser}
-                  anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  open={Boolean(anchorElUser)}
-                  onClose={handleCloseUserMenu}
+
+                <Button
+                  onClick={onLogout}
+                  variant="outlined"
+                  className="ml-5 bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
                 >
-                  <MenuItem onClick={onLogout}>
-                    <Typography textAlign="center">Logout</Typography>
-                  </MenuItem>
-                </Menu>
-              </Box>
+                  Log Out
+                </Button>
+              </div>
             </Toolbar>
           </Container>
         </AppBar>

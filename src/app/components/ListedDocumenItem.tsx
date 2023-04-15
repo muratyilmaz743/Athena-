@@ -1,8 +1,13 @@
+import { Button } from "@mui/material";
 import { DocumentProps } from "../utils/models/DocumentProps";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function ListedDocumentItem(props: DocumentProps) {
   return (
-    <tr key={props.name} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+    <tr
+      key={props.name}
+      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+    >
       {/* <td className="w-4 p-4">
         <div className="flex items-center">
           <input
@@ -19,11 +24,18 @@ export default function ListedDocumentItem(props: DocumentProps) {
         scope="row"
         className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
       >
-        <a href={props.url} target="_blank">{props.name}</a>
+        <a href={props.url} target="_blank">
+          {props.name}
+        </a>
       </th>
       <td className="px-6 py-4">{props.category}</td>
       <td className="px-6 py-4">{props.size}</td>
       <td className="px-6 py-4">{props.type}</td>
+      <td className="px-6 py-4">
+        <Button className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-0 rounded">
+          <DeleteIcon fontSize="medium"/>
+        </Button>
+      </td>
     </tr>
   );
 }
