@@ -1,23 +1,17 @@
-import { Inter } from "next/font/google";
+"use client"
+
 import styles from "./styles/page.module.css";
 import DocumentLister from "./components/DocumentLister";
-import UploadModal from "./components/UploadModal";
-import Footer from "./components/Footer";
-import Header from "./components/Header";
-import { UserContextProvider } from "./context/Provider/UserContextProvider";
-
-const inter = Inter({ subsets: ["latin"] });
+import { UserContext } from "./context/Context/UserContext";
+import { useContext } from "react";
 
 export default function Home() {
+  const auth = useContext(UserContext);
+  console.log(auth);
+
   return (
-    <UserContextProvider>
-      <>
-        <Header />
-        <main className={styles.main}>
-          <DocumentLister />
-        </main>
-        <Footer />
-      </>
-    </UserContextProvider>
+    <main className={styles.main}>
+      <DocumentLister />
+    </main>
   );
 }

@@ -14,6 +14,7 @@ import { DocumentProps } from "../utils/models/DocumentProps";
 import { formatBytes } from "../utils/sizeFormat";
 import { PageToken } from "../utils/models/PageToken";
 import { documentLister } from "../constants/variables";
+import UploadModal from "./UploadModal";
 
 export default function DocumentLister() {
   const [files, setFiles] = useState<DocumentProps[]>([]);
@@ -117,11 +118,13 @@ export default function DocumentLister() {
     "2023-03-21T09:49:15.073Z"
    */
   return (
-    <div className="relative shadow-md sm:rounded-lg">
-      <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-          <tr>
-            {/* <th scope="col" className="p-4">
+    <div className="flex flex-col items-center justify-center w-full">
+      <UploadModal />
+      <div className="relative shadow-md sm:rounded-lg">
+        <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+              {/* <th scope="col" className="p-4">
               <div className="flex items-center">
                 <input
                   id="checkbox-all-search"
@@ -133,54 +136,55 @@ export default function DocumentLister() {
                 </label>
               </div>
             </th> */}
-            <th scope="col" className="px-6 py-3">
-              Belge Adı
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Kategori
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Boyut
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Dosya Tipi
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {files.map((file) => (
-            <ListedDocumentItem
-              name={file.name}
-              category={file.category}
-              size={file.size}
-              type={file.type}
-              url={file.url}
-            />
-          ))}
-        </tbody>
-      </table>
-      <div className="grid width-100 justify-center items-center align-middle">
-        <nav
-          className="flex items-center justify-between pt-4"
-          aria-label="Table navigation"
-        >
-          {" "}
-          <ul className="inline-flex items-center -space-x-px">
-            <li>
-              <button
-                id="nextPageBtn"
-                onClick={getNextPage}
-                href="#"
-                className="bg-blue-500 hover:bg-blue-700 mb-4 text-white font-bold py-2 px-4 rounded disabled:bg-gray-600 disabled:text-gray-500"
-              >
-                Next Page
-              </button>
-            </li>
-          </ul>
-        </nav>
-        {/* <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 rounded my-4 mx-12">
+              <th scope="col" className="px-6 py-3">
+                Belge Adı
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Kategori
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Boyut
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Dosya Tipi
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {files.map((file) => (
+              <ListedDocumentItem
+                key={file.name}
+                name={file.name}
+                category={file.category}
+                size={file.size}
+                type={file.type}
+                url={file.url}
+              />
+            ))}
+          </tbody>
+        </table>
+        <div className="grid width-100 justify-center items-center align-middle">
+          <nav
+            className="flex items-center justify-between pt-4"
+            aria-label="Table navigation"
+          >
+            {" "}
+            <ul className="inline-flex items-center -space-x-px">
+              <li>
+                <button
+                  id="nextPageBtn"
+                  onClick={getNextPage}
+                  className="bg-blue-500 hover:bg-blue-700 mb-4 text-white font-bold py-2 px-4 rounded disabled:bg-gray-600 disabled:text-gray-500"
+                >
+                  Next Page
+                </button>
+              </li>
+            </ul>
+          </nav>
+          {/* <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 rounded my-4 mx-12">
           Seçilenleri İndir
         </button> */}
+        </div>
       </div>
     </div>
   );

@@ -1,24 +1,18 @@
 "use client";
 
-import * as React from "react";
-import Box from "@mui/material/Box";
+import CloseIcon from "@mui/icons-material/Close";
+import { IconButton, TextField } from "@mui/material";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
+import {
+  ref,
+  StorageReference,
+  updateMetadata,
+  uploadBytesResumable
+} from "firebase/storage";
+import * as React from "react";
 import { useState } from "react";
-import { ref, uploadBytesResumable, updateMetadata, SettableMetadata, StorageReference  } from "firebase/storage";
 import { storage } from "../../firebase";
-
-const style = {
-  position: "absolute" as "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-};
 
 export default function UploadModal() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -29,22 +23,27 @@ export default function UploadModal() {
     setPercent(0);
     setModalOpen(true);
   };
+
   const handleClose = () => setModalOpen(false);
 
-  const onFileChange = (event: { target: { files: any[] } }) => {
-    setFile(event.target.files[0]);
+  const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      setFile(event.target.files[0]);
+    }
   };
 
   const updateCategory = (documentRef: StorageReference, category: string) => {
     const newMetadata = {
       customMetadata: {
-        'category': category,
-      }
-    }
-    updateMetadata(documentRef, newMetadata)
-  }
+        category: category,
+      },
+    };
+    updateMetadata(documentRef, newMetadata);
+  };
 
   const onUpload = () => {
+    debugger;
+
     if (!file) return;
 
     const storageRef = ref(storage, `/files/${file.name}`);
@@ -60,48 +59,65 @@ export default function UploadModal() {
       },
       (err) => console.log(err),
       () => {
-        updateCategory(storageRef, category)
+        updateCategory(storageRef, category);
         setModalOpen(false);
       }
     );
-
-
   };
 
   return (
     <div>
-      <Button onClick={handleOpen} sx={{ my: 2, color: "white", display: "block" }}>Belge Yükle</Button>
+      <Button
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-3"
+        onClick={handleOpen}
+      >
+        Belge Yükle
+      </Button>
       <Modal
         open={modalOpen}
         onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+        className="flex items-center justify-center"
+        aria-labelledby="modal-title"
+        aria-describedby="modal-description"
       >
-        <Box sx={style}>
-          <div id="uploadFile" className="flex">
-            <input
-              className="p-2 block w-full text-sm text-gray-900 border border-gray-300 rounded-md cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-              id="file_input"
-              type="file"
-              accept=".pdf"
-              onChange={onFileChange}
-            />
+        <div className="bg-white shadow-md px-8 py-6 outline-none rounded-md max-w-md w-full">
+          <IconButton
+            edge="end"
+            color="inherit"
+            onClick={handleClose}
+            aria-label="close"
+            className="relative left-[23rem] bottom-[1rem]"
+          >
+            <CloseIcon />
+          </IconButton>
+          <h2 id="modal-title" className="text-2xl font-bold mb-4">
+            Upload File
+          </h2>
+          <TextField
+            label="Name"
+            variant="outlined"
+            fullWidth
+            className="mb-4"
+          />
+          <input
+            type="file"
+            className="mb-4"
+            accept=".pdf"
+            onChange={onFileChange}
+          />
+          <p>{percent} % done</p>
 
-            <input
-              className="p-2 block w-full text-sm text-gray-900 border border-gray-300 rounded-md cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-              onChange={(e) => setCategory(e.target.value)}
-            />
-
-            <button
-              type="submit"
-              onClick={onUpload}
-              className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-15 mt-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-            >
-              Upload Files
-            </button>
-            <p>{percent} % done</p>
-          </div>
-        </Box>
+          <Button
+            type="submit"
+            onClick={onUpload}
+            variant="contained"
+            color="primary"
+            fullWidth
+            className="bg-blue-500 text-white px-4 py-2 rounded-md mt-4"
+          >
+            Upload
+          </Button>
+        </div>
       </Modal>
     </div>
   );

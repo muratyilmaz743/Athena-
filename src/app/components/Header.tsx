@@ -110,7 +110,6 @@ function ResponsiveAppBar() {
                     display: { xs: "block", md: "none" },
                   }}
                 >
-                  <UploadModal />
                 </Menu>
               </Box>
               <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
@@ -132,9 +131,6 @@ function ResponsiveAppBar() {
               >
                 LOGO
               </Typography>
-              <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-                <UploadModal />
-              </Box>
 
               <Box sx={{ flexGrow: 0 }}>
                 {value?.email}

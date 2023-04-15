@@ -1,4 +1,7 @@
 import "./styles/globals.css";
+import Footer from "./components/Footer";
+import Header from "./components/Header";
+import { UserContextProvider } from "./context/Provider/UserContextProvider";
 
 export const metadata = {
   title: "Create Next App",
@@ -18,7 +21,13 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <UserContextProvider>
+          <Header />
+          {children}
+          <Footer />
+        </UserContextProvider>
+      </body>
     </html>
   );
 }
