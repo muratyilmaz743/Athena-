@@ -1,6 +1,6 @@
 "use client"
 
-import { Container, Typography, Link, makeStyles, styled } from "@mui/material";
+import { Container, Typography, Link, styled } from "@mui/material";
 
 function Footer() {
   const CustomTypography = styled(Typography)({
